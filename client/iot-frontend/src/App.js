@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { NetworkGraph } from "./components/NetworkGraph"; // Visualization of network
+import "./App.css"; // Optional styles
 
 function App() {
+  const [networkData, setNetworkData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data for both networks (with and without optimization)
+  useEffect(() => {
+    fetch("/api/get-network-data")
+      .then((res) => res.json())
+      .then((data) => {
+        setNetworkData(data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading Network Simulation...</div>;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Network Simulation</h1>
+      <h2>Unoptimized Network</h2>
+      <NetworkGraph data={networkData.unoptimized} />
+
+      <h2>Optimized Network (ML + Blockchain)</h2>
+      <NetworkGraph data={networkData.optimized} />
     </div>
   );
 }
